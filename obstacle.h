@@ -6,7 +6,13 @@
 #include <iosfwd>
 #include <cstdlib> //random
 #include <cstring>
+#include <cctype>
 #include <string>
+#include <list>
+#include <ostream>
+#include <iostream>
+#include <stdexcept>
+
 using namespace std;
 
 class Obstacle {
@@ -15,7 +21,7 @@ class Obstacle {
     Obstacle();
     ~Obstacle();
     Obstacle(const Obstacle & a_obstacle);
-    Obstacle( char* a_name, const string & a_message, int a_level);
+    Obstacle( const string &  a_name, const list<int> & the_difficulties, int a_difficulty);
     Obstacle& operator=(const Obstacle & a_obstacle);
 
     //Operator Overloading
@@ -23,33 +29,62 @@ class Obstacle {
     //diplay output cout function
     friend ostream & operator<<(ostream & O,const Obstacle & a_obstacle);
     //cin function
-    friend istream & operator>>(ostream & I, const Obstacle & a_obstacle);
+    friend istream & operator>>(istream & I, Obstacle & a_obstacle);
     //Compare function
     friend bool operator==(const Obstacle & op1, const Obstacle & op2);
     friend bool operator!=(const Obstacle & op1, const Obstacle & op2);
+
+    friend bool operator==(const string & name, const Obstacle & op1);
+    friend bool operator==(const Obstacle & op1, const string & name);
+
+    friend bool operator!=(const Obstacle & op1, const string & name);
+    friend bool operator!=(const string & name,const Obstacle & op1);
+
+
     friend bool operator<(const Obstacle & op1, const Obstacle & op2);
+    friend bool operator<(const Obstacle & op1, const string & name);
+    friend bool operator<(const string & name, const Obstacle & op1);
+
     friend bool operator>(const Obstacle & op1, const Obstacle & op2);
+    friend bool operator>(const Obstacle & op1, const string & name); 
+    friend bool operator>(const string & name, const Obstacle & op1 ); 
+
     friend bool operator<=(const Obstacle & op1, const Obstacle & op2);
+    friend bool operator<=(const Obstacle & op1, const string & name);
+    friend bool operator<=(const string & name, const Obstacle & op1);
+
     friend bool operator>=(const Obstacle & op1, const Obstacle & op2);
+    friend bool operator>=(const Obstacle & op1, const string & name);
+    friend bool operator>=(const string & name, const Obstacle & op2);
+
+    Obstacle& operator+=(int num);  
+    Obstacle& operator-=(int num);
+
+    friend Obstacle operator+( const Obstacle & op1, int num);
+    friend Obstacle operator+( int num, const Obstacle & op1);
+    friend Obstacle operator-(const Obstacle & op1, int num);
+    friend Obstacle operator-( int num, const Obstacle & op1);
 
     private:
     char * name;
-    string message;
-    int level[3];
+
+    protected:
+    list <int> difficulties;
+    int current_difficulty;
 
 
 };
 
 
-class Kid_obstacle {
+class Kid_obstacle : public Obstacle{
 
     public:
     Kid_obstacle();
     ~Kid_obstacle();
-    Kid_obstacle(char* a_name, const string & a_message, int a_level,
-                char * a_motivation, int a_reward);
-    Kid_obstacle(const Kid_obstacle & a_Kid_obstacle);
-    Kid_obstacle& operator=(const Kid_obstacle & a_Kid_obstacle);
+    Kid_obstacle(const string &  name, const list<int> & difficulties, int current_difficulty,
+                const string &  motivation, int reward, int bonus);
+    Kid_obstacle(const Kid_obstacle & Kid_obst);
+    Kid_obstacle& operator=(const Kid_obstacle & kid_obst);
     
     //This  will start the maze by by giving motivation to the kid
     bool beginning();
@@ -62,28 +97,26 @@ class Kid_obstacle {
     //cin function
     friend istream & operator>>(istream & I, const Kid_obstacle & op1);
 
-    //Compare function
-    friend bool operator==(const Kid_obstacle & op1, const Kid_obstacle & op2);
-    friend bool operator!=(const Kid_obstacle & op1, const Kid_obstacle & op2);
-    friend bool operator<(const Kid_obstacle & op1, const Kid_obstacle & op2);
-    friend bool operator>(const Kid_obstacle & op1, const Kid_obstacle & op2);
-    friend bool operator<=(const Kid_obstacle & op1, const Kid_obstacle & op2);
-    friend bool operator>=(const Kid_obstacle & op1, const Kid_obstacle & op2);
 
     private:
+    //Will motivated the kid
     char *motivation;
+    //Candies given to kids
     int reward;
-
+    //int bonus based on difficulty, will let kid move forward a certain #
+    int bonus;
 
 };
 
-class Teen_obstacle {
+class Teen_obstacle : public Obstacle{
     
     public:
+    //default constructor
     Teen_obstacle();
-    Teen_obstacle(char* a_name, const string & a_message, int a_level,
+    //Argument constructor
+    Teen_obstacle(const string & a_name, const string & a_message, int a_level,
                   int luck, int riddle_reward, int streak);
-
+    //Destructor;
     ~Teen_obstacle();
 
     //This will start of the maze by scarying the teen 
@@ -98,29 +131,25 @@ class Teen_obstacle {
     //cin >> function
     friend istream & operator>>(const Teen_obstacle & op1, const Teen_obstacle & op2);
     
-    //Compare function
-    friend bool operator==(const Teen_obstacle & op1, const Teen_obstacle & op2);
-    friend bool operator!=(const Teen_obstacle & op1, const Teen_obstacle & op2);
-    friend bool operator<(const Teen_obstacle & op1, const Teen_obstacle & op2);
-    friend bool operator>(const Teen_obstacle & op1, const Teen_obstacle & op2);
-    friend bool operator<=(const Teen_obstacle & op1, const Teen_obstacle & op2);
-    friend bool operator>=(const Teen_obstacle & op1, const Teen_obstacle & op2);
-
 
     private:
-
-    int luck;
+    
+    //For every obstacle will give short message based on int
+    int scare_level;
+    //During every obstacle will give the teen a riddle
+    //riddle will be a simple math question
+    string riddle;
+    //If teen gets riddle right then user gets reward
     int riddle_reward;
-    int streak;
 
 };
 
 
-class Adult_obstacle {
+class Adult_obstacle :public Obstacle{
 
     public:
     Adult_obstacle();
-    Adult_obstacle(char* a_name, const string & a_message, int a_level,
+    Adult_obstacle(const string &  a_name, const string & a_message, int a_level,
                    int a_age_req, int candy_price);
     ~Adult_obstacle();
     
@@ -132,8 +161,10 @@ class Adult_obstacle {
 
 
     private:
-    int age_req;//must be 18 to enter
+    //must be a certain age to enter maze
+    int age_req;
+    //price to gamble and win more steps
     int candy_price;
-
-
+    //This is how many steps you get if you win
+    int jackpot;    
 };
