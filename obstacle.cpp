@@ -113,7 +113,6 @@ istream & operator>>(istream & I, Obstacle & op1) {
     //1 2 3 2 // first 3 numbers = difficulty list Last num = current difficulty
     I >> diff1 >> diff2 >> diff3 >> curr;
     //name = bob diff1 = 1 diff2 = 2 diff3 = 3 curr = 2
-    I.ignore(100, '\n');    
 
     if(name == "")
         throw invalid_argument("Can't Pass empty string  name" );
@@ -328,7 +327,8 @@ Obstacle operator-(const Obstacle & op1, int num) {
     return result;
 }
 Obstacle operator-( int num, const Obstacle & op1) {
-    
+
+    //this calls the operator - that i implemented 
     return op1 - num;
 }
 

@@ -12,6 +12,8 @@
 #include <ostream>
 #include <iostream>
 #include <stdexcept>
+#include <array>
+#include <random>
 
 using namespace std;
 
@@ -30,6 +32,7 @@ class Obstacle {
     friend ostream & operator<<(ostream & O,const Obstacle & a_obstacle);
     //cin function
     friend istream & operator>>(istream & I, Obstacle & a_obstacle);
+
     //Compare function
     friend bool operator==(const Obstacle & op1, const Obstacle & op2);
     friend bool operator!=(const Obstacle & op1, const Obstacle & op2);
@@ -65,10 +68,9 @@ class Obstacle {
     friend Obstacle operator-(const Obstacle & op1, int num);
     friend Obstacle operator-( int num, const Obstacle & op1);
 
-    private:
+    protected:
     char * name;
 
-    protected:
     list <int> difficulties;
     int current_difficulty;
 
@@ -89,13 +91,13 @@ class Kid_obstacle : public Obstacle{
     //This  will start the maze by by giving motivation to the kid
     bool beginning();
     //This will give the kid candy and return an int which is how much you should move
-    int  move(); 
+    int  move(mt19937 & random_generator); 
 
     //operator overloading function
     //cout function
     friend ostream & operator<<(ostream & O, const Kid_obstacle & op1);
     //cin function
-    friend istream & operator>>(istream & I, const Kid_obstacle & op1);
+    friend istream & operator>>(istream & I, Kid_obstacle & op1);
 
 
     private:
@@ -114,8 +116,8 @@ class Teen_obstacle : public Obstacle{
     //default constructor
     Teen_obstacle();
     //Argument constructor
-    Teen_obstacle(const string & a_name, const string & a_message, int a_level,
-                  int luck, int riddle_reward, int streak);
+    Teen_obstacle(const string & name, const list<int> & difficulties , int current_difficulty,
+            const string & riddle, int scare_level, const array<string, 3>& choices, int answer);
     //Destructor;
     ~Teen_obstacle();
 
@@ -123,24 +125,26 @@ class Teen_obstacle : public Obstacle{
     bool beginning();
     
     //this will ask the user a riddle and move based on that amount
-    int move(); 
+    int move( mt19937 & random_generator); 
 
     //operator overloading function
     //cout << function
-    friend ostream & operator<<(const Teen_obstacle & op1, const Teen_obstacle & op2);
+    friend ostream & operator<<(ostream & O, const Teen_obstacle & op1);
     //cin >> function
-    friend istream & operator>>(const Teen_obstacle & op1, const Teen_obstacle & op2);
+    friend istream & operator>>(istream & I, Teen_obstacle & op1);
     
 
     private:
     
+    //During every obstacle will give the teen a riddle
+    //riddle displayed for user to anwser
+    string riddle;
     //For every obstacle will give short message based on int
     int scare_level;
-    //During every obstacle will give the teen a riddle
-    //riddle will be a simple math question
-    string riddle;
-    //If teen gets riddle right then user gets reward
-    int riddle_reward;
+    //options available to choose from
+    array <string, 3> choices;
+    //Holds the index to the right ansswer
+    int answer;
 
 };
 
@@ -149,16 +153,22 @@ class Adult_obstacle :public Obstacle{
 
     public:
     Adult_obstacle();
-    Adult_obstacle(const string &  a_name, const string & a_message, int a_level,
-                   int a_age_req, int candy_price);
+    Adult_obstacle(const string &  name, const list<int> & difficulties, int current_difficulty,
+                   int age_req, int candy_price, int jackpot);
+    
     ~Adult_obstacle();
     
     //This will start by verifying your age to see if old enough to participate
     bool beginning();
     
     //This will give the option to go safe and move normally or gamble and win big or lose big
-    int  move();
+    int  move( mt19937 & random_generator);
 
+    //operator overloading function
+    //cout << function
+    friend ostream & operator<<(ostream & O, const Adult_obstacle & op1);
+    //cin >> function
+    friend istream & operator>>(istream & I, Adult_obstacle & op1);
 
     private:
     //must be a certain age to enter maze
