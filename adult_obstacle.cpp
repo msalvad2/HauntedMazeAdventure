@@ -2,7 +2,7 @@
 
 #include "obstacle.h"
 
-
+//Default constructor for the adult obstacle
 Adult_obstacle::Adult_obstacle() : Obstacle(), age_req(0), candy_price(0), jackpot(0)
 {}
 
@@ -145,13 +145,14 @@ int  Adult_obstacle::move( mt19937 & random_generator) {
             cout << "Card I got: " << card2 << "| My total: " << obstacle_sum << endl;
         }
         cout << "I will Stand! " << endl;
-       
+       //This case is when both players go over 21, you see who when higher
         if(obstacle_sum > 21 && user_sum > 21) {
             cout << "WE BOTH WENT OVER 21! ";
             if(obstacle_sum < user_sum) {
                 cout << "Loser am closer to 21 so I win! you move 1 osbtacle backwards! " << endl;
                 move = -1;
             }
+            
             else if(obstacle_sum > user_sum) {
                 cout << "We both went over but you're closer to 21" << endl;
                 cout << "Bummer here is your price: " << jackpot << endl;
@@ -165,6 +166,7 @@ int  Adult_obstacle::move( mt19937 & random_generator) {
             }
 
         }
+        //This case is when one player went over 21
         else if(obstacle_sum > 21 || user_sum > 21) {
             //means I went over 21
             if(obstacle_sum > 21) {
@@ -182,6 +184,7 @@ int  Adult_obstacle::move( mt19937 & random_generator) {
 
 
         }
+        //This case is when both players stayed under 21, you see who got closer to 21
         else {
             if(obstacle_sum > user_sum) {
                  cout << "Loser I win! you move 1 osbtacle backwards! " << endl;
@@ -189,7 +192,7 @@ int  Adult_obstacle::move( mt19937 & random_generator) {
             }
             else if(obstacle_sum < user_sum) {
                 cout << "You win!" << endl;
-                cout << "Bummer here is your price: " << jackpot << endl;
+                cout << "Bummer you get to move: " << jackpot << endl;
                 move = jackpot;
             }
             else {
@@ -201,7 +204,7 @@ int  Adult_obstacle::move( mt19937 & random_generator) {
 
         }
         }
-
+        cout << "//////////////////////////////////////////////////////////////////////////////////" << end;
         return move;
 
     }

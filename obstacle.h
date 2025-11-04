@@ -43,11 +43,11 @@ class Obstacle {
     friend bool operator!=(const Obstacle & op1, const string & name);
     friend bool operator!=(const string & name,const Obstacle & op1);
 
-
+    //important to add all variants of the comparison so you don't limit them
     friend bool operator<(const Obstacle & op1, const Obstacle & op2);
     friend bool operator<(const Obstacle & op1, const string & name);
     friend bool operator<(const string & name, const Obstacle & op1);
-
+    //also for non member function make sure to write them vise versa
     friend bool operator>(const Obstacle & op1, const Obstacle & op2);
     friend bool operator>(const Obstacle & op1, const string & name); 
     friend bool operator>(const string & name, const Obstacle & op1 ); 
@@ -77,7 +77,7 @@ class Obstacle {
 
 };
 
-
+//This is the class for the kid
 class Kid_obstacle : public Obstacle{
 
     public:
